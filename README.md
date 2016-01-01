@@ -46,48 +46,31 @@ Simple startup using docker compose:
 
 or if you like to use PostgreSQL:
 
-    docker-compose up -f postgresql.yml
+    docker-compose -f postgresql.yml up
 
 Manual startup and linking to a MySQL container:
 
-docker run --name huginn_mysql \
-    -e MYSQL_DATABASE=huginn \
-    -e MYSQL_USER=huginn \
-    -e MYSQL_PASSWORD=somethingsecret \
-    -e MYSQL_ROOT_PASSWORD=somethingevenmoresecret \
-    mysql
+    docker run --name huginn_mysql \
+        -e MYSQL_DATABASE=huginn \
+        -e MYSQL_USER=huginn \
+        -e MYSQL_PASSWORD=somethingsecret \
+        -e MYSQL_ROOT_PASSWORD=somethingevenmoresecret \
+        mysql
 
-docker run --name huginn \
-    --link huginn_mysql:mysql \
-    -p 3000:3000 \
-    -e DATABASE_NAME=huginn \
-    -e DATABASE_USERNAME=huginn \
-    -e DATABASE_PASSWORD=somethingsecret \
-    dsander/huginn-production
-
-docker run --name huginn \
-    --link huginn_mysql:mysql \
-    -e DATABASE_NAME=huginn \
-    -e DATABASE_USERNAME=huginn \
-    -e DATABASE_PASSWORD=somethingsecret \
-    dsander/huginn-production bin/threaded.rb
-
-
-To link to another container named 'postgres':
-
-    docker run --name huginn_postgres \
-        -e POSTGRES_PASSWORD=mysecretpassword \
-        -e POSTGRES_USER=huginn -d postgres
-    docker run -it --link huginn_postgres:postgres --rm postgres \
-        sh -c 'exec psql -h "$POSTGRES_PORT_5432_TCP_ADDR" -p "$POSTGRES_PORT_5432_TCP_PORT" -U huginn -c "create database huginn_development;"'
-    docker run --rm --name huginn \
-        --link huginn_postgres:postgres \
+    docker run --name huginn_web \
+        --link huginn_mysql:mysql \
         -p 3000:3000 \
-        -e HUGINN_DATABASE_USERNAME=huginn \
-        -e HUGINN_DATABASE_PASSWORD=eval \
-        -e HUGINN_DATABASE_ADAPTER=postgresql \
-        cantino/huginn
+        -e DATABASE_NAME=huginn \
+        -e DATABASE_USERNAME=huginn \
+        -e DATABASE_PASSWORD=somethingsecret \
+        dsander/huginn-production
 
+    docker run --name huginn_threaded \
+        --link huginn_mysql:mysql \
+        -e DATABASE_NAME=huginn \
+        -e DATABASE_USERNAME=huginn \
+        -e DATABASE_PASSWORD=somethingsecret \
+        dsander/huginn-production /scripts/init bin/threaded.rb
 
 ## Environment Variables
 

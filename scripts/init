@@ -46,7 +46,7 @@ if [ -z $1 ]; then
   sudo -u huginn -H bundle exec rake db:create db:migrate RAILS_ENV=${RAILS_ENV}
 fi
 
-if [ -z "${DO_NOT_SEED}"]; then
+if [[ -z "${DO_NOT_SEED}" && -z $1 ]]; then
   sudo -u huginn -H bundle exec rake db:seed RAILS_ENV=${RAILS_ENV}
 fi
 

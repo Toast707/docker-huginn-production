@@ -14,6 +14,7 @@ mysql:
 
 huginn_web:
   build: .
+  restart: always
   extends:
     file: environment.yml
     service: huginn_base
@@ -24,6 +25,7 @@ huginn_web:
 
 huginn_threaded:
   build: .
+  restart: always
   extends:
     file: environment.yml
     service: huginn_base
